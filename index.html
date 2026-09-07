@@ -1,0 +1,565 @@
+<title>しほ添削ノート</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&family=Klee+One:wght@600&display=swap');
+
+  :root{
+    --paper:#F2EEE6;
+    --paper-card:#FBF9F4;
+    --ink:#2A2A2E;
+    --ink-soft:#6B6960;
+    --line:#DEDACD;
+    --red:#BE3B2B;
+    --red-soft:#F4D9D2;
+    --teal:#2F6F62;
+    --teal-soft:#DCEAE5;
+    --tag-bg:#ECE6D8;
+    --tag-ink:#5B5442;
+    --shadow: rgba(42,42,46,0.08);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#1C1B17;
+      --paper-card:#242320;
+      --ink:#ECE8DE;
+      --ink-soft:#B3AE9E;
+      --line:#3A3830;
+      --red:#E2685A;
+      --red-soft:#3B2420;
+      --teal:#79C6B4;
+      --teal-soft:#1E332E;
+      --tag-bg:#2E2C24;
+      --tag-ink:#C9C2AC;
+      --shadow: rgba(0,0,0,0.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#1C1B17;
+    --paper-card:#242320;
+    --ink:#ECE8DE;
+    --ink-soft:#B3AE9E;
+    --line:#3A3830;
+    --red:#E2685A;
+    --red-soft:#3B2420;
+    --teal:#79C6B4;
+    --teal-soft:#1E332E;
+    --tag-bg:#2E2C24;
+    --tag-ink:#C9C2AC;
+    --shadow: rgba(0,0,0,0.35);
+  }
+
+  *{ box-sizing:border-box; }
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans JP", "Hiragino Sans", sans-serif;
+    line-height:1.85;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{
+    font-family:"Zen Maru Gothic","Noto Sans JP",sans-serif;
+    text-wrap:balance;
+    letter-spacing:.01em;
+  }
+  .wrap{
+    max-width:760px;
+    margin:0 auto;
+    padding:56px 24px 96px;
+  }
+
+  /* ---------- masthead ---------- */
+  .masthead{
+    padding-bottom:28px;
+    margin-bottom:36px;
+    border-bottom:2px solid var(--line);
+  }
+  .eyebrow{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    font-size:12.5px;
+    font-weight:700;
+    letter-spacing:.14em;
+    color:var(--teal);
+    background:var(--teal-soft);
+    padding:5px 12px 5px 10px;
+    border-radius:999px;
+    margin-bottom:18px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:6px;height:6px;border-radius:50%;
+    background:var(--teal);
+  }
+  h1{
+    font-size:clamp(30px,6vw,42px);
+    font-weight:900;
+    margin:0 0 12px;
+    color:var(--ink);
+  }
+  .masthead p.lede{
+    font-size:16.5px;
+    color:var(--ink-soft);
+    max-width:56ch;
+    margin:0 0 22px;
+  }
+  .meta-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px 28px;
+    font-size:13.5px;
+    color:var(--ink-soft);
+  }
+  .meta-row strong{
+    color:var(--ink);
+    font-weight:700;
+  }
+
+  /* ---------- intro note ---------- */
+  .intro-note{
+    display:flex;
+    gap:16px;
+    padding:20px 22px;
+    background:var(--paper-card);
+    border:1px solid var(--line);
+    border-radius:14px;
+    margin-bottom:40px;
+    box-shadow:0 2px 10px var(--shadow);
+  }
+  .intro-note .mark{
+    flex:none;
+    font-family:"Klee One",cursive;
+    font-size:26px;
+    color:var(--red);
+    line-height:1;
+    margin-top:2px;
+  }
+  .intro-note p{
+    margin:0;
+    font-size:14.5px;
+    color:var(--ink-soft);
+  }
+
+  /* ---------- toc ---------- */
+  .toc-title{
+    font-size:12.5px;
+    font-weight:700;
+    letter-spacing:.1em;
+    color:var(--ink-soft);
+    margin:0 0 12px;
+  }
+  .toc{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+    margin-bottom:52px;
+  }
+  @media (max-width:520px){ .toc{ grid-template-columns:1fr; } }
+  .toc a{
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+    text-decoration:none;
+    color:var(--ink);
+    background:var(--paper-card);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:11px 14px;
+    font-size:14px;
+    transition:border-color .15s ease, transform .15s ease;
+  }
+  .toc a:hover, .toc a:focus-visible{
+    border-color:var(--red);
+    transform:translateY(-1px);
+  }
+  .toc .num{
+    font-family:"Zen Maru Gothic",sans-serif;
+    font-weight:900;
+    font-size:13px;
+    color:var(--red);
+    flex:none;
+  }
+  .toc .genre{
+    margin-left:auto;
+    font-size:12px;
+    color:var(--ink-soft);
+    white-space:nowrap;
+  }
+
+  /* ---------- participant sections ---------- */
+  section.entry{
+    scroll-margin-top:24px;
+    padding:34px 0;
+    border-top:1px solid var(--line);
+  }
+  section.entry:first-of-type{ border-top:none; }
+
+  .entry-head{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin-bottom:16px;
+  }
+  .num-badge{
+    flex:none;
+    width:38px;height:38px;
+    border-radius:50%;
+    background:var(--ink);
+    color:var(--paper);
+    display:flex;align-items:center;justify-content:center;
+    font-family:"Zen Maru Gothic",sans-serif;
+    font-weight:900;
+    font-size:15px;
+  }
+  .entry-head h2{
+    font-size:20px;
+    font-weight:700;
+    margin:0;
+    color:var(--ink);
+  }
+  .entry-head .tag{
+    display:inline-block;
+    margin-top:4px;
+    font-size:12px;
+    font-weight:500;
+    color:var(--tag-ink);
+    background:var(--tag-bg);
+    padding:3px 10px;
+    border-radius:999px;
+  }
+
+  .label{
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:.08em;
+    color:var(--ink-soft);
+    margin:22px 0 8px;
+  }
+  .consult{
+    font-size:15px;
+    color:var(--ink);
+    background:var(--paper-card);
+    border-left:3px solid var(--line);
+    padding:12px 16px;
+    border-radius:0 8px 8px 0;
+  }
+
+  ul.advice{
+    list-style:none;
+    margin:0;
+    padding:0;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  ul.advice li{
+    position:relative;
+    padding-left:20px;
+    font-size:15px;
+  }
+  ul.advice li::before{
+    content:"";
+    position:absolute;
+    left:0; top:9px;
+    width:9px;height:9px;
+    border:2px solid var(--red);
+    border-radius:50%;
+    background:transparent;
+  }
+
+  .quote{
+    margin-top:20px;
+    display:flex;
+    align-items:flex-start;
+    gap:12px;
+    background:var(--red-soft);
+    border-radius:12px;
+    padding:16px 18px;
+  }
+  .quote svg{ flex:none; margin-top:3px; }
+  .quote p{
+    margin:0;
+    font-family:"Klee One",cursive;
+    font-size:16.5px;
+    color:var(--ink);
+    line-height:1.7;
+  }
+  .quote p::before{ content:"「"; }
+  .quote p::after{ content:"」"; }
+
+  /* ---------- common points ---------- */
+  .common{
+    margin-top:56px;
+    padding-top:40px;
+    border-top:2px solid var(--line);
+  }
+  .common h2{
+    font-size:24px;
+    font-weight:900;
+    margin:0 0 6px;
+  }
+  .common .sub{
+    font-size:14px;
+    color:var(--ink-soft);
+    margin:0 0 26px;
+  }
+  .common-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+  }
+  @media (max-width:560px){ .common-grid{ grid-template-columns:1fr; } }
+  .common-tile{
+    background:var(--paper-card);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:18px 18px 20px;
+  }
+  .common-tile .letter{
+    font-family:"Zen Maru Gothic",sans-serif;
+    font-weight:900;
+    font-size:13px;
+    color:var(--teal);
+    background:var(--teal-soft);
+    display:inline-block;
+    padding:3px 9px;
+    border-radius:7px;
+    margin-bottom:10px;
+  }
+  .common-tile h3{
+    font-size:15.5px;
+    margin:0 0 6px;
+    font-weight:700;
+  }
+  .common-tile p{
+    font-size:13.5px;
+    color:var(--ink-soft);
+    margin:0;
+  }
+
+  footer{
+    margin-top:64px;
+    padding-top:24px;
+    border-top:1px solid var(--line);
+    font-size:12.5px;
+    color:var(--ink-soft);
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+
+  a{ color:inherit; }
+  :focus-visible{ outline:2px solid var(--red); outline-offset:2px; }
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <span class="eyebrow">RMC ｜ Rebel Muses Craft</span>
+    <h1>しほ添削ノート</h1>
+    <p class="lede">アカウント添削会でしほ先生が話した内容を、6組ぶんまとめました。当日参加できなかった方も、ここを読めば自分のアカウントに置き換えて考えられるようにしています。</p>
+    <div class="meta-row">
+      <span><strong>形式</strong>：Zoom添削会（画面共有・個別相談）</span>
+      <span><strong>参加</strong>：全6組</span>
+      <span><strong>担当</strong>：しほ先生</span>
+    </div>
+  </header>
+
+  <div class="intro-note">
+    <span class="mark">✎</span>
+    <p>この回は開始から音声トラブルが続き、ミュート解除だけでかなり時間を使ってしまう場面もありました。それでもバタバタの中、一組ずつ具体的なアドバイスが出ているので、進行の様子は省いて「使える部分」だけを抜き出しています。</p>
+  </div>
+
+  <p class="toc-title">登場した6組（タップで移動）</p>
+  <nav class="toc">
+    <a href="#e1"><span class="num">01</span> みゆきさん <span class="genre">透明感アクセサリー</span></a>
+    <a href="#e2"><span class="num">02</span> よもぎさん <span class="genre">リール編集</span></a>
+    <a href="#e3"><span class="num">03</span> ななこさん <span class="genre">犬雑貨へ転向</span></a>
+    <a href="#e4"><span class="num">04</span> kmiuraさん <span class="genre">生地雑貨・AI活用</span></a>
+    <a href="#e5"><span class="num">05</span> Kiyokoさん <span class="genre">焼き菓子・コピー</span></a>
+    <a href="#e6"><span class="num">06</span> もえさん <span class="genre">販売会の盛り上げ方</span></a>
+  </nav>
+
+  <section class="entry" id="e1">
+    <div class="entry-head">
+      <div class="num-badge">01</div>
+      <div>
+        <h2>みゆきさん</h2>
+        <span class="tag">透明感アクセサリー</span>
+      </div>
+    </div>
+    <p class="label">相談</p>
+    <p class="consult">リールからプロフィールに来てもらえてもフォローにつながらない。フィード欄全体を見て、何が足りないか教えてほしい。</p>
+    <p class="label">アドバイス</p>
+    <ul class="advice">
+      <li>プロフィール文に「アクセサリーを売っている」と一目で伝わる言葉を足す。「気分を底上げするアクセサリー」のように、雰囲気の言葉＋アクセサリーという単語をセットにすると伝わりやすい。金具の種類や購入方法も明記する。</li>
+      <li>お客様の声（レビュー）が0件なのは地味に痛い。まずは投稿への「可愛い」といったコメントを増やすところから、ハイライトに入れられる声を少しずつ集めていく。</li>
+      <li>撮影の背景は柄物の台紙をやめて白背景で統一。透明感を出したいなら、光の反射や水の揺れを写り込ませる方が「透明感」が伝わりやすい。</li>
+      <li>ペルソナ（どんな生活スタイルの人に届けたいか）を先に決める。例えば「忙しく過ごしているOLさんに、ちょっとした癒しを届けたい」くらいまで具体化しておく。</li>
+      <li>「安く仕入れたものを高く見せる」ように受け取られかねない言い回しは転売っぽく映るので避ける。</li>
+      <li>新作紹介のリールを1本追加。「何度も試作してやっと1つできた」といった商品開発のストーリーを見せると興味を引きやすい。</li>
+    </ul>
+    <div class="quote">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 15c1-4 3-6 3-9a3 3 0 1 0-3 3" stroke="var(--red)" stroke-width="1.6" stroke-linecap="round"/><path d="M12 15c1-4 3-6 3-9a3 3 0 1 0-3 3" stroke="var(--red)" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <p>商品開発の物語みたいなのを、リールで出していきましょう</p>
+    </div>
+  </section>
+
+  <section class="entry" id="e2">
+    <div class="entry-head">
+      <div class="num-badge">02</div>
+      <div>
+        <h2>よもぎさん</h2>
+        <span class="tag">リール編集</span>
+      </div>
+    </div>
+    <p class="label">相談</p>
+    <p class="consult">毎日リールを投稿しているが、閲覧数が伸びない。編集のどこを直せばいいか教えてほしい。</p>
+    <p class="label">アドバイス</p>
+    <ul class="advice">
+      <li>字幕を一行にまとめて、パッパッと切り替える最新のスタイルはとても良い。このまま続ける。</li>
+      <li>字幕に句読点は不要。テロップの切り替え自体が句読点の役割を果たしていて、そのほうが見た目もすっきりする。</li>
+      <li>販売会が1週間後に迫っているタイミングなので、新規向けと販売訴求の比率は今のバランスのままでよい（無理に変えなくて大丈夫）。</li>
+    </ul>
+    <div class="quote">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 15c1-4 3-6 3-9a3 3 0 1 0-3 3" stroke="var(--red)" stroke-width="1.6" stroke-linecap="round"/><path d="M12 15c1-4 3-6 3-9a3 3 0 1 0-3 3" stroke="var(--red)" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <p>字幕の切り替えが、もう句読点の役割をしてる</p>
+    </div>
+  </section>
+
+  <section class="entry" id="e3">
+    <div class="entry-head">
+      <div class="num-badge">03</div>
+      <div>
+        <h2>ななこさん</h2>
+        <span class="tag">犬雑貨へ転向</span>
+      </div>
+    </div>
+    <p class="label">相談</p>
+    <p class="consult">個人面談で「ターゲットを犬と暮らす方に絞る」というアドバイスをもらった。今Minneに残している通常柄のポーチは売り続けていいのか、それとも犬関連に絞るべきか。</p>
+    <p class="label">アドバイス</p>
+    <ul class="advice">
+      <li>犬雑貨ブランドとして進めるなら、関係のない商品（通常柄のポーチなど）はいったん販売しない。犬好きな方に向けて発信していく中で、その方たちがポーチを欲しいとは限らず、ターゲットとの訴求がぶれてしまう。</li>
+      <li>Minneの該当商品は削除ではなく非公開にすればよい。</li>
+      <li>「お散歩バッグにつけられるチャーム」のように犬との接点がはっきりしている商品なら、ポーチ的なアイテムでも問題ない。</li>
+      <li>リールのネタに困ったら、RMC内外で犬雑貨を扱っているアカウントを研究する。どんな内容を投稿しているかを見て学び、自分に落とし込んでいく。</li>
+    </ul>
+    <div class="quote">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 15c1-4 3-6 3-9a3 3 0 1 0-3 3" stroke="var(--red)" stroke-width="1.6" stroke-linecap="round"/><path d="M12 15c1-4 3-6 3-9a3 3 0 1 0-3 3" stroke="var(--red)" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <p>ターゲットがずれると、訴求もしにくくなる</p>
+    </div>
+  </section>
+
+  <section class="entry" id="e4">
+    <div class="entry-head">
+      <div class="num-badge">04</div>
+      <div>
+        <h2>kmiuraさん</h2>
+        <span class="tag">生地雑貨・AI活用</span>
+      </div>
+    </div>
+    <p class="label">相談</p>
+    <p class="consult">今回が初参加。アカウント全体を見て気になるところを教えてほしい。財布やショルダーバッグの着画などでAI生成画像を使っているが、違和感がないか確認したい。</p>
+    <p class="label">アドバイス</p>
+    <ul class="advice">
+      <li>プロフィール文がやや長い。「型紙から製作まで」の一文を残したいなら「一つ一つ手作りしています」の部分は削り、コンセプトを15字前後の一言に凝縮する。</li>
+      <li>使っている生地の系統（リバティ、韓国生地など）に統一感があるなら、それを一言添えると世界観が伝わりやすい。</li>
+      <li>フィードは一枚一枚のディテール写真はとても良いが、9枚並べて見ると全体的にごちゃごちゃして見える。背景だけ・小物なしの「余白のある写真」を増やして、メリハリをつける。投稿前にコラージュアプリで並びを確認するとよい。</li>
+      <li>AI生成画像（財布の柄、バッグの着画）は違和感なく、むしろ上手に活用できている。</li>
+    </ul>
+    <div class="quote">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 15c1-4 3-6 3-9a3 3 0 1 0-3 3" stroke="var(--red)" stroke-width="1.6" stroke-linecap="round"/><path d="M12 15c1-4 3-6 3-9a3 3 0 1 0-3 3" stroke="var(--red)" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <p>フィードには「見てもらいたい投稿」と「世界観を出す投稿」、2つの役割がある</p>
+    </div>
+  </section>
+
+  <section class="entry" id="e5">
+    <div class="entry-head">
+      <div class="num-badge">05</div>
+      <div>
+        <h2>Kiyokoさん</h2>
+        <span class="tag">焼き菓子・コピー</span>
+      </div>
+    </div>
+    <p class="label">相談</p>
+    <p class="consult">来週の金曜から販売会が始まる。商品説明リールを作りたいが、冒頭のフック（キャッチコピー）を考えるだけで何時間もかかってしまい、なかなかリールが完成しない。</p>
+    <p class="label">アドバイス</p>
+    <ul class="advice">
+      <li>フックは1案だけ考えようとせず、ChatGPTなどに5〜10案出してもらい、その中から選ぶ方が結果的に精度も速さも上がる。</li>
+      <li>過去に使ったフックを一覧にしてテキストで渡すと、トーン感が伝わりさらに良い案が出やすくなる。</li>
+      <li>実店舗ならではの強みを冒頭映像に活かす。お店の外観に「大阪・岸和田」のような地名テキストを重ねるだけで、見てもらえる率が上がる。</li>
+      <li>珍しい食材のエピソード（今回は限定のいちじく）は「こんなの見たことない・食べたことない」という驚きの切り口が刺さりやすい。</li>
+    </ul>
+    <div class="quote">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 15c1-4 3-6 3-9a3 3 0 1 0-3 3" stroke="var(--red)" stroke-width="1.6" stroke-linecap="round"/><path d="M12 15c1-4 3-6 3-9a3 3 0 1 0-3 3" stroke="var(--red)" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <p>「1つ考えて」ではなく「10個出して」と指示すると精度が上がる</p>
+    </div>
+  </section>
+
+  <section class="entry" id="e6">
+    <div class="entry-head">
+      <div class="num-badge">06</div>
+      <div>
+        <h2>もえさん</h2>
+        <span class="tag">販売会の盛り上げ方</span>
+      </div>
+    </div>
+    <p class="label">相談</p>
+    <p class="consult">前回の指摘を受けてフィードや文章を改善したが、フォロワーが増えず、今まさに開催中の販売会でもまだ売上が出ていない。ストーリーズの出し方や広告について相談したい。</p>
+    <p class="label">アドバイス</p>
+    <ul class="advice">
+      <li>整えてすぐには数字が動かないもの。フォロワーや閲覧数が伸びてくるのはもっと先だと思って、根気強く更新を続けることが大切。</li>
+      <li>ストーリーズは投稿の間隔がポイント。24時間以上あけて投稿すると閲覧数が伸びやすい傾向がある。販売会2日前などピンポイントで、長文・大きめのストーリーズを投げるのも効果的。</li>
+      <li>広告は今回スタートが遅れて出稿がうまく回らなかったので、次回はもっと早めに稼働させておく。</li>
+      <li>新規獲得フェーズの間は、伸びるリール（新規向け）と販売訴求リールの比率は7:3くらいを目安にする。</li>
+    </ul>
+    <div class="quote">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 15c1-4 3-6 3-9a3 3 0 1 0-3 3" stroke="var(--red)" stroke-width="1.6" stroke-linecap="round"/><path d="M12 15c1-4 3-6 3-9a3 3 0 1 0-3 3" stroke="var(--red)" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <p>整えてすぐは効果が出ない。数字が動くのはもっと先だと思ってOK</p>
+    </div>
+  </section>
+
+  <div class="common">
+    <h2>全体を通して共通していたポイント</h2>
+    <p class="sub">ジャンルは違っても、6組に共通して出てきたアドバイスをまとめました。</p>
+    <div class="common-grid">
+      <div class="common-tile">
+        <span class="letter">A</span>
+        <h3>写真は背景をシンプルに</h3>
+        <p>柄物の台紙より白背景の方が、商品の色味や質感が伝わりやすい。光や水の反射など、質感を語る要素は背景ではなく光の使い方で作る。</p>
+      </div>
+      <div class="common-tile">
+        <span class="letter">B</span>
+        <h3>フィードには余白を</h3>
+        <p>ディテール写真ばかりだと9枚並んだ時にごちゃつく。背景だけ・小物なしの「見られなくてもいい投稿」を混ぜてメリハリをつける。</p>
+      </div>
+      <div class="common-tile">
+        <span class="letter">C</span>
+        <h3>ターゲットを先に決める</h3>
+        <p>ペルソナや訴求方向を先に固めてから投稿を作ると、商品ラインナップやネタ選びで迷わなくなる。</p>
+      </div>
+      <div class="common-tile">
+        <span class="letter">D</span>
+        <h3>AIには「複数案」を出させる</h3>
+        <p>フックやアイデア出しは1案でなく5〜10案。過去の投稿例を渡すとトーンが揃った案が出やすい。</p>
+      </div>
+      <div class="common-tile">
+        <span class="letter">E</span>
+        <h3>効果が出るまでは時間差がある</h3>
+        <p>整えた直後に数字は動かない。ストーリーズの投稿間隔や広告の準備は、早め・こまめに仕込んでおく。</p>
+      </div>
+      <div class="common-tile">
+        <span class="letter">F</span>
+        <h3>投稿には2つの役割がある</h3>
+        <p>「見てもらいたい投稿」と「世界観を出す投稿」。両方をバランス良く配置することがフィード全体の印象を決める。</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <span>しほ添削会ノート</span>
+    <span>RMC 内共有用</span>
+  </footer>
+
+</div>
